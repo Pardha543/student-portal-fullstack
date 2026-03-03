@@ -18,6 +18,21 @@ public class UserAdminController {
         this.repo = repo;
         this.encoder = encoder;
     }
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping
+    public ResponseEntity<?> getAllUsers() {
+        return ResponseEntity.ok(repo.findAll());
+    }
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+        if (!repo.existsById(id)) {
+            return ResponseEntity.badRequest().body("User not found");
+        }
+
+        repo.deleteById(id);
+        return ResponseEntity.ok("User deleted");
+    }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
